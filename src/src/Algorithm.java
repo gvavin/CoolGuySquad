@@ -10,13 +10,17 @@ import java.util.Scanner;
  *
  * @author spockm
  */
-public class Algorithm 
+public class Algorithm
 {
     public static final int NUM_SECTIONALS = 16;
     public static final int MIN_TEAMS_IN_SECTIONAL = 4;
     public static final int MAX_TEAMS_IN_SECTIONAL = 8;
     public static final int STARTING_TEMP = 100;
     public static final double COOLING_RATE = 1.02;
+
+    public double originalTemp;
+
+    public double newTemp;
     
     ArrayList<SchoolInfo> allSchools = new ArrayList<>();
     File file = new File("src/src/SchoolsLoc.csv");
@@ -89,6 +93,33 @@ public class Algorithm
             sectionals[z%NUM_SECTIONALS].addSchool(allSchools.get(z));
         }
         
+    }
+
+    public void swapSectionals()
+    {
+        originalTemp = evaluate();
+
+        int firstSection = (int)(Math.random()*sectionals.length);
+        int secondSection = (int)(Math.random()*sectionals.length);
+        int firstTeam =(int)(Math.random()*sectionals[firstSection].getTeams().size());
+        int secondTeam =(int)(Math.random()*sectionals[secondSection].getTeams().size());
+
+        SchoolInfo teamOne = sectionals[firstSection].getTeams().get(firstTeam);
+        SchoolInfo teamTwo = sectionals[firstSection].getTeams().get(secondTeam);
+
+        SchoolInfo temp = teamOne;
+
+        sectionals[firstSection].getTeams().remove(firstTeam);
+        sectionals[firstSection].getTeams().add(teamTwo);
+        sectionals[secondSection].getTeams().remove(teamTwo);
+        sectionals[secondSection].getTeams().add(temp);
+
+
+        newTemp = evaluate();
+
+
+
+
     }
     
     public void displaySectionals()
