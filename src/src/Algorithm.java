@@ -21,6 +21,10 @@ public class Algorithm
     public double originalTemp;
 
     public double newTemp;
+
+    public double deltaTemp;
+
+    public double p;
     
     ArrayList<SchoolInfo> allSchools = new ArrayList<>();
     File file = new File("src/src/SchoolsLoc.csv");
@@ -116,6 +120,15 @@ public class Algorithm
 
 
         newTemp = evaluate();
+        deltaTemp = originalTemp-newTemp;
+
+        if(deltaTemp<0){
+
+        }
+        else{
+            p
+        }
+
 
 
 
