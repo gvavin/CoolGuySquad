@@ -17,6 +17,7 @@ public class Algorithm
     public static final int MAX_TEAMS_IN_SECTIONAL = 8;
     public static final int STARTING_TEMP = 100;
     public static final double COOLING_RATE = 1.02;
+    public static int swapAmount = 0;
 
     public double originalEnergy;
 
@@ -51,14 +52,20 @@ public class Algorithm
         readFile();
         makeSectionals();
         displaySectionals();
-        drawNewMap();
+
 
         //RUN THE SIMULATION HERE
         temp = STARTING_TEMP;
-        while(on)
+        while(swapAmount<20000 && temp>(1/(10)((int)Math.exp(170)))){
             swapSectionals();
+            swapAmount++;
+            drawNewMap();
+        }
+
+
     
         displaySectionals();
+        drawNewMap();
     }
     
     public void readFile()
@@ -121,7 +128,6 @@ public class Algorithm
         sectionals[firstSection].addSchool(teamtwo);
 
 
-
         newEnergy = evaluate();
         deltaEnergy = newEnergy-originalEnergy;
 
@@ -130,7 +136,7 @@ public class Algorithm
         }
         else{
             p= Math.exp(-deltaEnergy / temp);
-            double rand = Math.random()+1;
+            int rand = (int)Math.random();
             if(p>rand){
                 temp = temp / COOLING_RATE;
             }
