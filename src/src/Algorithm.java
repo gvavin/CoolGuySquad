@@ -18,20 +18,26 @@ public class Algorithm
     public static final int STARTING_TEMP = 100;
     public static final double COOLING_RATE = 1.02;
 
-    public double originalTemp;
+    public double originalEnergy;
 
-    public double newTemp;
+    public double newEnergy;
 
-    public double deltaTemp;
+    public boolean on = true;
+    public double deltaEnergy;
 
     public double p;
-    
+
+    public boolean keyPressed;
+
     ArrayList<SchoolInfo> allSchools = new ArrayList<>();
     File file = new File("src/src/SchoolsLoc.csv");
     Scanner stream;
     Sectional[] sectionals = new Sectional[NUM_SECTIONALS];
     Visualizer viz = new Visualizer();
     static double temp = STARTING_TEMP;
+
+
+
     
 
     public static void main(String[] args)
@@ -48,7 +54,9 @@ public class Algorithm
         drawNewMap();
 
         //RUN THE SIMULATION HERE
-        
+        temp = STARTING_TEMP;
+        while(on)
+            swapSectionals();
     
         displaySectionals();
     }
@@ -101,32 +109,40 @@ public class Algorithm
 
     public void swapSectionals()
     {
-        originalTemp = evaluate();
+        originalEnergy = evaluate();
 
         int firstSection = (int)(Math.random()*sectionals.length);
         int secondSection = (int)(Math.random()*sectionals.length);
-        int firstTeam =(int)(Math.random()*sectionals[firstSection].getTeams().size());
-        int secondTeam =(int)(Math.random()*sectionals[secondSection].getTeams().size());
-
-        SchoolInfo teamOne = sectionals[firstSection].getTeams().get(firstTeam);
-        SchoolInfo teamTwo = sectionals[firstSection].getTeams().get(secondTeam);
-
-        SchoolInfo temp = teamOne;
-
-        sectionals[firstSection].getTeams().remove(firstTeam);
-        sectionals[firstSection].getTeams().add(teamTwo);
-        sectionals[secondSection].getTeams().remove(teamTwo);
-        sectionals[secondSection].getTeams().add(temp);
 
 
-        newTemp = evaluate();
-        deltaTemp = originalTemp-newTemp;
+        SchoolInfo teamone = sectionals[firstSection].takeRandomTeam();
+        SchoolInfo teamtwo = sectionals[secondSection].takeRandomTeam();
+        sectionals[secondSection].addSchool(teamone);
+        sectionals[firstSection].addSchool(teamtwo);
 
-        if(deltaTemp<0){
 
+
+        newEnergy = evaluate();
+        deltaEnergy = newEnergy-originalEnergy;
+
+        if(deltaEnergy<0){
+            temp = temp / COOLING_RATE;
         }
         else{
-            p
+            p= Math.exp(-deltaEnergy / temp);
+            double rand = Math.random()+1;
+            if(p>rand){
+                temp = temp / COOLING_RATE;
+            }
+            else{
+                SchoolInfo teamthree = sectionals[firstSection].takeLastTeam();
+                SchoolInfo teamfour = sectionals[secondSection].takeLastTeam();
+                sectionals[secondSection].addSchool(teamthree);
+                sectionals[firstSection].addSchool(teamfour);
+
+                temp = temp / COOLING_RATE;
+            }
+
         }
 
 
